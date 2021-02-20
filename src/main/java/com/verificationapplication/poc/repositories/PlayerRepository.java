@@ -6,4 +6,6 @@ import com.verificationapplication.poc.dataobjects.Player;
 
 public interface PlayerRepository extends JpaRepository<Player, Integer> {
 
+	//Player find 
+	
 }

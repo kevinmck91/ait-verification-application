@@ -1,8 +1,17 @@
 package com.verificationapplication.poc.dataobjects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Player {
 
-	private 	int 	memberbershipId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private 	long 	id;
+	private 	int 	membershipId;
 	private 	String 	firstname;
 	private 	String 	lastname;
 	private 	String 	dateOfBirth; // TODO change to date
@@ -17,7 +26,7 @@ public class Player {
 	
 	public Player(int memberbershipId, String firstname, String lastname, String dateOfBirth, String image,
 			String qrCode, int clubId, boolean activeMembership, int trustScore) {
-		this.memberbershipId = memberbershipId;
+		this.membershipId = memberbershipId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.dateOfBirth = dateOfBirth;
@@ -28,10 +37,10 @@ public class Player {
 		this.trustScore = trustScore;
 	}
 	public int getMemberbershipId() {
-		return memberbershipId;
+		return membershipId;
 	}
 	public void setMemberbershipId(int memberbershipId) {
-		this.memberbershipId = memberbershipId;
+		this.membershipId = memberbershipId;
 	}
 	public String getFirstname() {
 		return firstname;
@@ -86,7 +95,7 @@ public class Player {
 	
 	@Override
 	public String toString() {
-		return "Player [memberbershipId=" + memberbershipId + ", firstname=" + firstname + ", lastname=" + lastname
+		return "Player [membershipId=" + membershipId + ", firstname=" + firstname + ", lastname=" + lastname
 				+ ", dateOfBirth=" + dateOfBirth + ", image=" + image + ", qrCode=" + qrCode + ", clubId=" + clubId
 				+ ", activeMembership=" + activeMembership + ", trustScore=" + trustScore + "]";
 	}
