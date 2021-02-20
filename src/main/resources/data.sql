@@ -4,3 +4,5 @@ values (123,'Joe','Bloggs',TO_DATE('17/12/2013', 'DD/MM/YYYY'),'myimage.jpeg','t
 
 -- Team
 insert into Team (name,location,club_id) values ('Team A','Blackrock',123);
+insert into Team (name,location,club_id) values ('Team B','Na Fianna',234);
+insert into Team (name,location,club_id) values ('Team C','Cuala',555);
