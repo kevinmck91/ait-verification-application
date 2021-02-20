@@ -23,6 +23,9 @@ public class Player {
 
 	
 	//TODO look up linter
+	public Player(){
+
+	}
 	
 	public Player(int memberbershipId, String firstname, String lastname, String dateOfBirth, String image,
 			String qrCode, int clubId, boolean activeMembership, int trustScore) {
