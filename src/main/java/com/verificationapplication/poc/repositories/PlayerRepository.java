@@ -1,11 +1,14 @@
 package com.verificationapplication.poc.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.verificationapplication.poc.dataobjects.Player;
 
-public interface PlayerRepository extends JpaRepository<Player, Integer> {
+public interface PlayerRepository extends JpaRepository<Player, Long> {
 
-	//Player find 
+	
 	
 }

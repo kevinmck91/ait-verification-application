@@ -4,13 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Player")
 public class Player {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private 	long 	id;
+	private 	Long 	id;
 	private 	int 	membershipId;
 	private 	String 	firstname;
 	private 	String 	lastname;
@@ -23,6 +25,10 @@ public class Player {
 
 	
 	//TODO look up linter
+	
+	public Player() {
+		
+	}
 	
 	public Player(int memberbershipId, String firstname, String lastname, String dateOfBirth, String image,
 			String qrCode, int clubId, boolean activeMembership, int trustScore) {
