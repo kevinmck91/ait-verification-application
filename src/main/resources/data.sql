@@ -1,2 +1,1 @@
-insert into player (membershipId,firstname,lastname,dateOfBirth,image,qrCode,clubId,activeMembership,trustScore)
-values (123,'Joe','Bloggs','01-Jan-1970','myimage.jpeg','testqrcode',555,true,100);
+insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code,club_id,active_membership,trust_score) values (123,'Joe','Bloggs','01-Jan-1970','myimage.jpeg','testqrcode',555,true,100);
