@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Player {
@@ -14,7 +15,7 @@ public class Player {
 	private 	int 	membershipId;
 	private 	String 	firstname;
 	private 	String 	lastname;
-	private 	String 	dateOfBirth; // TODO change to date
+	private 	Date dateOfBirth;
 	private 	String 	image;
 	private 	String 	qrCode;
 	private 	int 	clubId;
@@ -27,9 +28,9 @@ public class Player {
 
 	}
 	
-	public Player(int memberbershipId, String firstname, String lastname, String dateOfBirth, String image,
+	public Player(int membershipId, String firstname, String lastname, Date dateOfBirth, String image,
 			String qrCode, int clubId, boolean activeMembership, int trustScore) {
-		this.membershipId = memberbershipId;
+		this.membershipId = membershipId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.dateOfBirth = dateOfBirth;
@@ -39,11 +40,11 @@ public class Player {
 		this.activeMembership = activeMembership;
 		this.trustScore = trustScore;
 	}
-	public int getMemberbershipId() {
+	public int getMembershipId() {
 		return membershipId;
 	}
-	public void setMemberbershipId(int memberbershipId) {
-		this.membershipId = memberbershipId;
+	public void setMembershipId(int membershipId) {
+		this.membershipId = membershipId;
 	}
 	public String getFirstname() {
 		return firstname;
@@ -57,10 +58,10 @@ public class Player {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-	public String getDateOfBirth() {
+	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 	public String getImage() {
