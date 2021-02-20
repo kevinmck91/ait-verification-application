@@ -10,6 +10,13 @@ public class Team {
 	private 	String 	clubId;
 
 	
+	
+	public Team(String name, String location, String clubId) {
+		this.name = name;
+		this.location = location;
+		this.clubId = clubId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -33,6 +40,12 @@ public class Team {
 	public void setClubId(String clubId) {
 		this.clubId = clubId;
 	}
+
+	@Override
+	public String toString() {
+		return "Team [name=" + name + ", location=" + location + ", clubId=" + clubId + "]";
+	}
+	
 	
 	
 
