@@ -11,7 +11,7 @@ public class Player {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private 	long 	id;
+	private 	int 	id;
 	private 	int 	membershipId;
 	private 	String 	firstname;
 	private 	String 	lastname;
@@ -94,9 +94,11 @@ public class Player {
 	public void setTrustScore(int trustScore) {
 		this.trustScore = trustScore;
 	}
-	
-	
-	
+
+	public int getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return "Player [membershipId=" + membershipId + ", firstname=" + firstname + ", lastname=" + lastname

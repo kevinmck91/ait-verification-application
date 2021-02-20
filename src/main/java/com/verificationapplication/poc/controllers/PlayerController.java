@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.verificationapplication.poc.dataobjects.Player;
 import com.verificationapplication.poc.dataobjects.Team;
@@ -32,6 +28,18 @@ public class PlayerController {
 			return playerRepository.findAll();
 		}
 	}
+
+	@DeleteMapping("players/{membershipId}")
+	public void deletePlayer(@PathVariable Optional<Integer> membershipId){
+		List<Player> thePlayer = playerRepository.findByMembershipId(membershipId);
+		if(thePlayer.size() == 1){
+			playerRepository.deleteById(thePlayer.get(0).getId());
+			System.out.println("Player with membershipId [" + membershipId + "] Removed from Player Table");
+		}else{
+			System.out.println("Player for membershipId [" + membershipId + "] Does not exist");
+		}
+	}
+
 	
 	
 	/*
