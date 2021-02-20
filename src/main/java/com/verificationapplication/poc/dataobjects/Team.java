@@ -4,14 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.security.PrivateKey;
 
 @Entity
 public class Team {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private		Long 	id;
+	private		Integer 	id;
 	private 	String 	name;
 	private 	String 	location;
 	private 	String 	clubId;
@@ -50,12 +49,13 @@ public class Team {
 		this.clubId = clubId;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return "Team [name=" + name + ", location=" + location + ", clubId=" + clubId + "]";
 	}
-	
-	
-	
 
 }
