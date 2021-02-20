@@ -28,20 +28,11 @@ public class PocApplication implements CommandLineRunner {
 		playerRepository.save(new Player(321, "firstname", "lastname", "dateOfBirth", "image", "qrCode", 123, true, 21));
 		playerRepository.save(new Player(456, "firstname", "lastname", "dateOfBirth", "image", "qrCode", 123, true, 21));
 		
-		System.out.println("Output All player");
 		
-		List<Player> players = playerRepository.findAll();
 		
-		for (Player player : players) {
-			players.toString();
-		}
-		
-		System.out.println("Output an single player");
-		playerRepository.findById(1l).ifPresent(x -> System.out.println(x));
 		
 		
 	}
 	
-
 
 }
