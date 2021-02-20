@@ -8,6 +8,7 @@ import com.verificationapplication.poc.dataobjects.Player;
 public class beanGetPlayerData {
 	
 	// This is a test line
+	// It is a very good test line
 	
 	/**
 	 * @param id
