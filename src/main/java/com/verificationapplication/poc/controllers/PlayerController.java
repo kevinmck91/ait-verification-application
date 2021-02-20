@@ -15,7 +15,7 @@ public class PlayerController {
 	@Autowired
     private PlayerRepository playerRepository;
 	private String membershipId;
-	
+
 	@GetMapping("players")
 	public List<Player> getData(@RequestParam("firstname") Optional<String> firstname, @RequestParam("membershipId") Optional<Integer> membershipId) {
 		if(firstname.isPresent()) {
