@@ -1,5 +1,8 @@
 package com.verificationapplication.poc.repositories;
 
-public interface TeamRepository {
+import com.verificationapplication.poc.dataobjects.Team;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TeamRepository extends JpaRepository<Team, Integer> {
 
 }

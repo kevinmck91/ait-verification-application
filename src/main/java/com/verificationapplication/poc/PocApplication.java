@@ -27,12 +27,6 @@ public class PocApplication implements CommandLineRunner {
 		playerRepository.save(new Player(123, "firstname", "lastname", "dateOfBirth", "image", "qrCode", 123, true, 21));
 		playerRepository.save(new Player(321, "firstname", "lastname", "dateOfBirth", "image", "qrCode", 123, true, 21));
 		playerRepository.save(new Player(456, "firstname", "lastname", "dateOfBirth", "image", "qrCode", 123, true, 21));
-		
-		
-		
-		
-		
-	}
-	
 
+	}
 }

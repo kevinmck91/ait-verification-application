@@ -1,13 +1,24 @@
 package com.verificationapplication.poc.dataobjects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.security.PrivateKey;
+
+@Entity
 public class Team {
-	
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private		Long 	id;
 	private 	String 	name;
 	private 	String 	location;
 	private 	String 	clubId;
 
-	
+	public Team() {
+
+	}
 	
 	public Team(String name, String location, String clubId) {
 		this.name = name;
