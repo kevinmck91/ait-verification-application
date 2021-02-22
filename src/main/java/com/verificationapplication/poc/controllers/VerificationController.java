@@ -1,6 +1,5 @@
 package com.verificationapplication.poc.controllers;
 
-import com.sun.codemodel.internal.JForEach;
 import com.verificationapplication.poc.dataobjects.FailedVerificationReasons;
 import com.verificationapplication.poc.dataobjects.Player;
 import com.verificationapplication.poc.dataobjects.VerificationInput;
@@ -17,45 +16,75 @@ import java.util.Optional;
 @RestController
 public class VerificationController {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+	@Autowired
+	private PlayerRepository playerRepository;
 
-    @PostMapping("/teamVerification")
-    public VerificationOutput teamVerification(@RequestBody VerificationInput input) {
+	@PostMapping("/teamVerification")
+	public VerificationOutput teamVerification(@RequestBody VerificationInput input) {
 
-        VerificationOutput verificationOutput = new VerificationOutput();
-        boolean allPlayersValid = true;
+		VerificationOutput verificationOutput = new VerificationOutput();
+		boolean allPlayersValid = true;
 
-        for(Player player : input.getPlayers()){
-            FailedVerificationReasons failedReasons = new FailedVerificationReasons();
-            boolean playerValid = true;
+		for (Player player : input.getPlayers()) {
 
-            //Use Case 1: Send in a list of players for a team and check that they their membership id exists in our database
-             List<Player> thePlayer = playerRepository.findByMembershipId(Optional.of(player.getMembershipId()));
-             if(thePlayer.size() == 0){
-                 allPlayersValid = false;
-                 playerValid = false;
-                 failedReasons.setFirstname("Joe");
-                 failedReasons.setLastname("Bloggs");
-                 failedReasons.setId(-1);
+			FailedVerificationReasons failedVerificationReasons = new FailedVerificationReasons();
+			boolean playerValid = true;
 
-                 System.out.println("Player does not exist");
-             }else{
-                 System.out.println("Player exists");
-             }
+			// Verification of entire team on the membership Id
+			List<Player> thePlayer = playerRepository.findByMembershipId(Optional.of(player.getMembershipId()));
 
-            //Use Case 2:
+			if (thePlayer.size() == 0) {
 
-            //Use Case 3:
+				allPlayersValid = false;
+				playerValid = false;
+				failedVerificationReasons.setFirstname(player.getFirstname());
+				failedVerificationReasons.setLastname(player.getLastname());
+				failedVerificationReasons.setId(-1);
+				failedVerificationReasons.setReasons("Membership ID does not exist");
 
-            if(!playerValid){
-                verificationOutput.setVerificationIssues(failedReasons);
-            }
+			}
 
-        }
+			// Use Case 2: Verification of entire team on the membership active status
 
-        verificationOutput.setAllPlayersValid(allPlayersValid);
-        return verificationOutput;
+			if (thePlayer.size() == 0) {
+				failedVerificationReasons.setReasons("Membership is not active");
+			} else {
 
-    }
+				if (thePlayer.get(0).isActiveMembership() == false) {
+					failedVerificationReasons.setReasons("Membership is not active");
+					playerValid = false;
+					allPlayersValid = false;
+					failedVerificationReasons.setFirstname(player.getFirstname());
+					failedVerificationReasons.setLastname(player.getLastname());
+					failedVerificationReasons.setId(thePlayer.get(0).getMembershipId());
+				}
+
+			}
+
+			// Use Case 3: Verfication of entire team on the date of birth
+
+			if (thePlayer.size() != 0) {
+
+				if ((thePlayer.get(0).getDateOfBirth().getYear() + 1900) < input.getAgeGroup()) {
+					failedVerificationReasons.setReasons("Player is older than age group");
+					playerValid = false;
+					allPlayersValid = false;
+					failedVerificationReasons.setFirstname(player.getFirstname());
+					failedVerificationReasons.setLastname(player.getLastname());
+					failedVerificationReasons.setId(thePlayer.get(0).getMembershipId());
+				}
+
+
+			}
+
+			if (!playerValid) {
+				verificationOutput.setVerificationIssues(failedVerificationReasons);
+			}
+
+		}
+
+		verificationOutput.setAllPlayersValid(allPlayersValid);
+		return verificationOutput;
+
+	}
 }

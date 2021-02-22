@@ -1,5 +1,6 @@
 package com.verificationapplication.poc.dataobjects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FailedVerificationReasons {
@@ -7,7 +8,7 @@ public class FailedVerificationReasons {
     private String firstname;
     private String lastname;
     private int id;
-    private List<String> reasons;
+    private List<String> reasons = new ArrayList<>();
 
     public FailedVerificationReasons(){
 
@@ -48,8 +49,8 @@ public class FailedVerificationReasons {
         return reasons;
     }
 
-    public void setReasons(List<String> reasons) {
-        this.reasons = reasons;
+    public void setReasons(String reasons) {
+        this.reasons.add(reasons);
     }
 
     @Override
