@@ -1,32 +1,41 @@
 package com.verificationapplication.poc.dataobjects;
 
+import java.util.List;
+
 public class VerificationInput {
 
-	private 	int 	membershipId;
-	private 	String 	image;
+	private 	int 	ageGroup; //2007 , 2013
+	private 	List<Player> players;
 
 	public VerificationInput() {
 	}
-	
-	public VerificationInput(int membershipId, String image) {
-		this.membershipId = membershipId;
-		this.image = image;
+
+	public VerificationInput(int ageGroup, List<Player> players) {
+		this.ageGroup = ageGroup;
+		this.players = players;
 	}
-	
-	public int getMembershipId() {
-		return membershipId;
+
+	public int getAgeGroup() {
+		return ageGroup;
 	}
-	public void setMembershipId(int membershipId) {
-		this.membershipId = membershipId;
+
+	public List<Player> getPlayers() {
+		return players;
 	}
-	public String getImage() {
-		return image;
+
+	public void setAgeGroup(int ageGroup) {
+		this.ageGroup = ageGroup;
 	}
-	public void setImage(String image) {
-		this.image = image;
+
+	public void setPlayers(List<Player> players) {
+		this.players = players;
 	}
-	
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "VerificationInput{" +
+				"ageGroup=" + ageGroup +
+				", players=" + players +
+				'}';
+	}
 }
