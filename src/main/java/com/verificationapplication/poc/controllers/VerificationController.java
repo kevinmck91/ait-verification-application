@@ -1,15 +1,19 @@
 package com.verificationapplication.poc.controllers;
 
+import com.google.zxing.NotFoundException;
+import com.google.zxing.WriterException;
 import com.verificationapplication.poc.dataobjects.FailedVerificationReasons;
 import com.verificationapplication.poc.dataobjects.Player;
 import com.verificationapplication.poc.dataobjects.VerificationInput;
 import com.verificationapplication.poc.dataobjects.VerificationOutput;
+import com.verificationapplication.poc.qr_utils.ReadQRCode;
 import com.verificationapplication.poc.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +91,27 @@ public class VerificationController {
 		return verificationOutput;
 
 	}
+	
+	@PostMapping("/qrcode")
+	public String qrDecoder(@RequestBody String input) {
+		
+		String result = "";
+		
+		try {
+			
+			result = ReadQRCode.readQRCode(input);
+		
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//TODO: Call the 'Get Player method' using the QRcode result and return a player instead of a string
+		
+		return result;
+	}
+	
 }
