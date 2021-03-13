@@ -93,7 +93,10 @@ insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code
 values (200014,'Jack','Bloggs14',TO_DATE('26/01/2007', 'DD/MM/YYYY'),'myimage14.jpeg','testqrcode14',20001,true,100);
 insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code,club_id,active_membership,trust_score)
 values (200015,'Jack','Bloggs15',TO_DATE('27/01/2007', 'DD/MM/YYYY'),'myimage15.jpeg','testqrcode15',20001,true,100);
-
+insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code,club_id,active_membership,trust_score)
+values (200016,'Jack','Bloggs16',TO_DATE('27/01/2007', 'DD/MM/YYYY'),'myimage15.jpeg','testqrcode15',20001,false,100);
+insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code,club_id,active_membership,trust_score)
+values (200017,'Jack','Bloggs17',TO_DATE('27/01/2006', 'DD/MM/YYYY'),'myimage15.jpeg','testqrcode15',20001,true,100);
 
 -- Player SQL - Team D
 insert into PLAYER (membership_id,firstname,lastname,date_of_birth,image,qr_code,club_id,active_membership,trust_score)
