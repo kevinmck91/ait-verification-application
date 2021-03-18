@@ -2,6 +2,8 @@ package com.verificationapplication.poc;
 
 import java.util.GregorianCalendar;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +23,8 @@ public class PocApplication implements CommandLineRunner {
 	}
 	
 	public void run(String... args) {
-		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		// Add all players to the database manually 
 		// TODO convert this to a script
 		playerRepository.save(new Player(789, "firstname", "lastname", new GregorianCalendar(2013,10,28).getTime(), "image", "qrCode", 123, true, 21));
