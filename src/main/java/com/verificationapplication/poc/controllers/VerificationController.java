@@ -2,6 +2,7 @@ package com.verificationapplication.poc.controllers;
 
 import com.amazonaws.ResponseMetadata;
 import com.amazonaws.services.rekognition.model.CompareFacesResult;
+import com.amazonaws.services.rekognition.model.ComparedSourceImageFace;
 import com.amazonaws.services.rekognition.model.transform.CompareFacesResultJsonUnmarshaller;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -136,10 +137,12 @@ public class VerificationController {
 	@PostMapping("faceCompare")
 	public ResponseEntity<Object> compareFaces(@RequestParam("image1") MultipartFile multipartFile1, @RequestParam("image2") MultipartFile multipartFile2){
 		String url = "http://18.205.162.30:8082/faceCompare";
+		//http://127.0.0.1:8080/faceCompare
 		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Object> result = null;
 
 		Resource invoicesResource1 = multipartFile1.getResource();
-		Resource invoicesResource2 = multipartFile2.getResource();
+		Resource invoicesResource2 = multipartFile2.getResource();  //TODO: Get from Database for Player
 		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		parts.add("image1", invoicesResource1);
 		parts.add("image2", invoicesResource2);
@@ -147,14 +150,23 @@ public class VerificationController {
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
-		//ResponseEntity<CompareFacesResult> result = restTemplate.postForEntity(url, httpEntity, CompareFacesResult.class);
-		ResponseEntity<Object> result = restTemplate.postForEntity(url, httpEntity, Object.class);
+		try {
+			result = restTemplate.postForEntity(url, httpEntity, Object.class);
+			LinkedHashMap linkedHashMap = (LinkedHashMap) result.getBody();
+			LinkedHashMap sourceImageFace = (LinkedHashMap) linkedHashMap.get("sourceImageFace");
+			Double confidence = (Double) sourceImageFace.get("confidence");
 
-	//	CompareFacesResult result1 = new CompareFacesResult();
-		System.err.println(result.getBody());
-		String body = result.getBody();
-		ResponseMetadata responseMetadata = new ResponseMetadata(result.getBody());
-
+			ArrayList faceMatches = (ArrayList) linkedHashMap.get("faceMatches");
+			if(faceMatches.size() != 0) {
+				LinkedHashMap values = (LinkedHashMap) faceMatches.get(0);
+				Double sim = (Double) values.get("similarity");
+				System.err.println("Does match : Sim Score = " + sim);
+			}else{
+				System.err.println("Does not match");
+			}
+		}catch (Exception e){
+			System.err.println("Remote Server is down");
+		}
 
 		return result;
 	}
