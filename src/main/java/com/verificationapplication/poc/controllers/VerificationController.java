@@ -1,20 +1,12 @@
 package com.verificationapplication.poc.controllers;
 
-import com.amazonaws.ResponseMetadata;
-import com.amazonaws.services.rekognition.model.CompareFacesResult;
-import com.amazonaws.services.rekognition.model.ComparedSourceImageFace;
-import com.amazonaws.services.rekognition.model.transform.CompareFacesResultJsonUnmarshaller;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.WriterException;
-import com.verificationapplication.poc.dataobjects.FailedVerificationReasons;
-import com.verificationapplication.poc.dataobjects.Player;
-import com.verificationapplication.poc.dataobjects.VerificationInput;
-import com.verificationapplication.poc.dataobjects.VerificationOutput;
-import com.verificationapplication.poc.qr_utils.ReadQRCode;
-import com.verificationapplication.poc.repositories.PlayerRepository;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
+
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -22,19 +14,23 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriBuilderFactory;
 
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.verificationapplication.poc.dataobjects.FailedVerificationReasons;
+import com.verificationapplication.poc.dataobjects.Player;
+import com.verificationapplication.poc.dataobjects.VerificationInput;
+import com.verificationapplication.poc.dataobjects.VerificationOutput;
+import com.verificationapplication.poc.repositories.PlayerRepository;
 
 @RestController
 public class VerificationController {
@@ -97,7 +93,6 @@ public class VerificationController {
 					failedVerificationReasons.setId(thePlayer.get(0).getMembershipId());
 				}
 
-
 			}
 
 			if (!playerValid) {
@@ -110,39 +105,17 @@ public class VerificationController {
 		return verificationOutput;
 
 	}
-	
-	@PostMapping("/qrcode")
-	public String qrDecoder(@RequestBody String input) {
-		
-		String result = "";
-		
-		try {
-			
-			result = ReadQRCode.readQRCode(input);
-		
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-		} catch (WriterException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		//TODO: Call the 'Get Player method' using the QRcode result and return a player instead of a string
-		
-		return result;
-	}
-
 
 	@PostMapping("faceCompare")
-	public ResponseEntity<Object> compareFaces(@RequestParam("image1") MultipartFile multipartFile1, @RequestParam("image2") MultipartFile multipartFile2){
+	public ResponseEntity<Object> compareFaces(@RequestParam("image1") MultipartFile multipartFile1,
+			@RequestParam("image2") MultipartFile multipartFile2) {
 		String url = "http://18.205.162.30:8082/faceCompare";
-		//http://127.0.0.1:8080/faceCompare
+		// http://127.0.0.1:8080/faceCompare
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<Object> result = null;
 
 		Resource invoicesResource1 = multipartFile1.getResource();
-		Resource invoicesResource2 = multipartFile2.getResource();  //TODO: Get from Database for Player
+		Resource invoicesResource2 = multipartFile2.getResource(); // TODO: Get from Database for Player
 		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		parts.add("image1", invoicesResource1);
 		parts.add("image2", invoicesResource2);
@@ -157,21 +130,41 @@ public class VerificationController {
 			Double confidence = (Double) sourceImageFace.get("confidence");
 
 			ArrayList faceMatches = (ArrayList) linkedHashMap.get("faceMatches");
-			if(faceMatches.size() != 0) {
+			if (faceMatches.size() != 0) {
 				LinkedHashMap values = (LinkedHashMap) faceMatches.get(0);
 				Double sim = (Double) values.get("similarity");
 				System.err.println("Does match : Sim Score = " + sim);
-			}else{
+			} else {
 				System.err.println("Does not match");
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.err.println("Remote Server is down");
 		}
 
 		return result;
 	}
 
+	@PostMapping("/qrcode")
+	public Player qrDecoder(@RequestParam("qrcodeimage") MultipartFile multipartFile1) {
 
+		Optional<Integer> membershipId;
+		Result result = null;
+		
+		try {
+			BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(
+					new BufferedImageLuminanceSource(ImageIO.read(multipartFile1.getInputStream()))));
+			result = new MultiFormatReader().decode(binaryBitmap);
 
+			System.out.println(result.getText());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		membershipId = Optional.ofNullable(Integer.parseInt(result.getText()));
+		
+		List<Player> player = playerRepository.findByMembershipId(membershipId);
+
+		return player.get(0);
 	}
+
+}
