@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
@@ -28,6 +31,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.verificationapplication.poc.dataobjects.FailedVerificationReasons;
 import com.verificationapplication.poc.dataobjects.Player;
+import com.verificationapplication.poc.dataobjects.PlayerResponseQrCode;
 import com.verificationapplication.poc.dataobjects.VerificationInput;
 import com.verificationapplication.poc.dataobjects.VerificationOutput;
 import com.verificationapplication.poc.repositories.PlayerRepository;
@@ -145,7 +149,7 @@ public class VerificationController {
 	}
 
 	@PostMapping("/qrcode")
-	public Player qrDecoder(@RequestParam("qrcodeimage") MultipartFile multipartFile1) {
+	public PlayerResponseQrCode qrDecoder(@RequestParam("qrcodeimage") MultipartFile multipartFile1) {
 
 		Optional<Integer> membershipId;
 		Result result = null;
@@ -162,9 +166,27 @@ public class VerificationController {
 
 		membershipId = Optional.ofNullable(Integer.parseInt(result.getText()));
 		
-		List<Player> player = playerRepository.findByMembershipId(membershipId);
+		List<Player> players = playerRepository.findByMembershipId(membershipId);
+		PlayerResponseQrCode playerResponse = new PlayerResponseQrCode();
 
-		return player.get(0);
+		if(players.size() != 0 ) {
+			
+			playerResponse.setClubId(players.get(0).getClubId());
+			playerResponse.setFirstname(players.get(0).getFirstname());
+			playerResponse.setLastname(players.get(0).getLastname());
+			playerResponse.setYearOfBirth(players.get(0).getDateOfBirth().getYear());
+			
+		} else {
+			//TODO
+		}
+
+		return playerResponse;
 	}
+	
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+	}
+
 
 }
