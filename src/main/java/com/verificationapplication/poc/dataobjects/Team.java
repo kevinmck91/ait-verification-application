@@ -13,13 +13,13 @@ public class Team {
 	private		Integer 	id;
 	private 	String 	name;
 	private 	String 	location;
-	private 	String 	clubId;
+	private 	int clubId;
 
 	public Team() {
 
 	}
 	
-	public Team(String name, String location, String clubId) {
+	public Team(String name, String location, int clubId) {
 		this.name = name;
 		this.location = location;
 		this.clubId = clubId;
@@ -41,11 +41,11 @@ public class Team {
 		this.location = location;
 	}
 
-	public String getClubId() {
+	public int getClubId() {
 		return clubId;
 	}
 
-	public void setClubId(String clubId) {
+	public void setClubId(int clubId) {
 		this.clubId = clubId;
 	}
 

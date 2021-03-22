@@ -14,6 +14,7 @@ public class Player {
 	private String firstname;
 	private String lastname;
 	private Date dateOfBirth;
+	private int ageGroup;
 	@Lob
 	private Blob image;
 	private int clubId;
@@ -26,12 +27,13 @@ public class Player {
 
 	}
 
-	public Player(int id, int membershipId, String firstname, String lastname, Date dateOfBirth, Blob image, int clubId, boolean activeMembership, int trustScore) {
+	public Player(int id, int membershipId, String firstname, String lastname, Date dateOfBirth, int ageGroup, Blob image, int clubId, boolean activeMembership, int trustScore) {
 		this.id = id;
 		this.membershipId = membershipId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.dateOfBirth = dateOfBirth;
+		this.ageGroup = ageGroup;
 		this.image = image;
 		this.clubId = clubId;
 		this.activeMembership = activeMembership;
@@ -106,15 +108,27 @@ public class Player {
 		return id;
 	}
 
-	@Override
-	public String toString() {
-		return "Player [membershipId=" + membershipId + ", firstname=" + firstname + ", lastname=" + lastname
-				+ ", dateOfBirth=" + dateOfBirth + ", image=" + image + ", clubId=" + clubId
-				+ ", activeMembership=" + activeMembership + ", trustScore=" + trustScore + "]";
+	public int getAgeGroup() {
+		return ageGroup;
 	}
 
-	
-	
-	
-	
+	public void setAgeGroup(int ageGroup) {
+		this.ageGroup = ageGroup;
+	}
+
+	@Override
+	public String toString() {
+		return "Player{" +
+				"id=" + id +
+				", membershipId=" + membershipId +
+				", firstname='" + firstname + '\'' +
+				", lastname='" + lastname + '\'' +
+				", dateOfBirth=" + dateOfBirth +
+				", ageGroup=" + ageGroup +
+				", image=" + image +
+				", clubId=" + clubId +
+				", activeMembership=" + activeMembership +
+				", trustScore=" + trustScore +
+				'}';
+	}
 }

@@ -3,7 +3,9 @@ package com.verificationapplication.poc.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.verificationapplication.poc.dataobjects.Player;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +16,7 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
 
     List<Player> findByLastname(String lastname);
 
-    //Player find
+    List<Player> findByClubIdAndAgeGroup(int clubId, int ageGroup);
 
 	
 }

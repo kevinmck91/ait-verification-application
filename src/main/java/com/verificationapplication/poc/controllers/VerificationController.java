@@ -1,20 +1,27 @@
 package com.verificationapplication.poc.controllers;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.io.*;
+import java.nio.ByteBuffer;
+
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
+
+import com.amazonaws.services.rekognition.model.CompareFacesResult;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.LinkedMultiValueMap;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +42,7 @@ import com.verificationapplication.poc.dataobjects.PlayerResponseQrCode;
 import com.verificationapplication.poc.dataobjects.VerificationInput;
 import com.verificationapplication.poc.dataobjects.VerificationOutput;
 import com.verificationapplication.poc.repositories.PlayerRepository;
+
 
 @RestController
 public class VerificationController {
@@ -112,9 +120,9 @@ public class VerificationController {
 
 	@PostMapping("faceCompare")
 	public ResponseEntity<Object> compareFaces(@RequestParam("image1") MultipartFile multipartFile1,
-			@RequestParam("image2") MultipartFile multipartFile2) {
+			@RequestParam("image2") MultipartFile multipartFile2, @RequestParam("clubId") Integer clubId, @RequestParam("ageGroup") Integer ageGroup) {
 		String url = "http://18.205.162.30:8082/faceCompare";
-		// http://127.0.0.1:8080/faceCompare
+		//String url = "http://127.0.0.1:8080/faceCompare1";
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<Object> result = null;
 
@@ -123,6 +131,33 @@ public class VerificationController {
 		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		parts.add("image1", invoicesResource1);
 		parts.add("image2", invoicesResource2);
+
+
+		//Get all images for Club ID for Given Year
+		List<Player>  playersPhotosForClub = playerRepository.findByClubIdAndAgeGroup(clubId, ageGroup);
+
+		MultipartFile multipartFile = null;
+		try {
+			File file = new File("/Users/dplower/development/poc/verificationapplication/src/main/resources/TeamA/t_a_player_1.png");
+			if (file.exists()) {
+				System.out.println("File Exist => " + file.getName() + " :: " + file.getAbsolutePath());
+			}
+			FileInputStream input = new FileInputStream(file);
+			 multipartFile = new MockMultipartFile("file", file.getName(), "image/png",
+					IOUtils.toByteArray(input));
+			System.out.println("multipartFile => " + multipartFile.isEmpty() + " :: "
+					+ multipartFile.getOriginalFilename() + " :: " + multipartFile.getName() + " :: "
+					+ multipartFile.getSize() + " :: " + multipartFile.getBytes());
+		} catch (IOException e) {
+			System.out.println("Exception => " + e.getLocalizedMessage());
+		}
+		Resource invoicesResource3 = multipartFile.getResource();
+		//parts.add("image2", invoicesResource3);
+
+
+	    //	int blobLength = (int) playersPhotosForClub.get(0).getImage().length();
+		//	byte[] blobAsBytes = playersPhotosForClub.get(0).getImage().getBytes(1, blobLength);
+
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
@@ -142,6 +177,7 @@ public class VerificationController {
 				System.err.println("Does not match");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Remote Server is down");
 		}
 
@@ -174,7 +210,7 @@ public class VerificationController {
 			playerResponse.setClubId(players.get(0).getClubId());
 			playerResponse.setFirstname(players.get(0).getFirstname());
 			playerResponse.setLastname(players.get(0).getLastname());
-			playerResponse.setYearOfBirth(players.get(0).getDateOfBirth().getYear());
+			playerResponse.setYearOfBirth(players.get(0).getDateOfBirth().getYear()+1900);
 			
 		} else {
 			//TODO
@@ -188,5 +224,20 @@ public class VerificationController {
 		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 	}
 
+	@PostMapping("/faceCompare1")
+	public CompareFacesResult faceCompare(@RequestParam("image1") MultipartFile multipartFile1, @RequestParam("image2") MultipartFile multipartFile2) throws IOException {
+
+		String sourceImageName = multipartFile1.getOriginalFilename();
+
+		ByteBuffer sourceImageBytes = ByteBuffer.wrap(multipartFile1.getBytes());
+
+		String targetImageName = multipartFile2.getOriginalFilename();
+
+		ByteBuffer targetImageBytes = ByteBuffer.wrap(multipartFile2.getBytes());
+		return null;
+	}
+
 
 }
+
+
