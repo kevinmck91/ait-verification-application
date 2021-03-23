@@ -124,24 +124,18 @@ public class VerificationController {
 	public List<PlayerMatch> compareFaces(@RequestParam("image1") MultipartFile multipartFile1, @RequestParam("clubId") Integer clubId, @RequestParam("ageGroup") Integer ageGroup) {
 		String url = "http://18.205.162.30:8082/faceCompare";
 		//String url = "http://127.0.0.1:8080/faceCompare1";
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> result = null;
-
-		Resource invoicesResource1 = multipartFile1.getResource();
-		//Resource invoicesResource2 = multipartFile2.getResource(); // TODO: Get from Database for Player
-		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-		parts.add("image1", invoicesResource1);
-		//parts.add("image2", invoicesResource2);
 
 		//Get all images for Club ID for Given Year
 		List<Player> playersPhotosForClub = playerRepository.findByClubIdAndAgeGroup(clubId, ageGroup);
 
 		ArrayList<PlayerMatch> playersThatMatch = new ArrayList<>();
+		int count = 0;
 
 		for (Player player : playersPhotosForClub) {
 			try {
 				//File file = new File("/Users/dplower/development/poc/verificationapplication/src/main/resources/TeamA/t_a_player_1.png");
-				File file = new File("src/main/resources/targetFile.png");
+				String filename = "src/main/resources/targetFile"+count+".png";
+				File file = new File(filename);
 				FileUtils.copyInputStreamToFile(player.getImage().getBinaryStream(), file);
 				if (file.exists()) {
 					System.out.println("File Exist => " + file.getName() + " :: " + file.getAbsolutePath());
@@ -153,7 +147,16 @@ public class VerificationController {
 						+ multipartFile.getOriginalFilename() + " :: " + multipartFile.getName() + " :: "
 						+ multipartFile.getSize() + " :: " + multipartFile.getBytes());
 				Resource invoicesResource3 = multipartFile.getResource();
+
+				Resource invoicesResource1 = multipartFile1.getResource();
+				//Resource invoicesResource2 = multipartFile2.getResource(); // TODO: Get from Database for Player
+				LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+				parts.add("image1", invoicesResource1);
+				//parts.add("image2", invoicesResource2);
 				parts.add("image2", invoicesResource3);
+
+				RestTemplate restTemplate = new RestTemplate();
+				ResponseEntity<Object> result = null;
 
 				HttpHeaders httpHeaders = new HttpHeaders();
 				httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -182,6 +185,7 @@ public class VerificationController {
 				e.printStackTrace();
 				System.err.println("Remote Server is down");
 			}
+			count++;
 		}
 
 		return playersThatMatch;
