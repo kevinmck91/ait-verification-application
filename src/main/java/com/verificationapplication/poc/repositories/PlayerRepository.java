@@ -18,5 +18,7 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
 
     List<Player> findByClubIdAndAgeGroup(int clubId, int ageGroup);
 
+    Player findByMembershipIdAndClubIdAndAgeGroup(int membershipId, int clubId, int ageGroup);
+
 	
 }
