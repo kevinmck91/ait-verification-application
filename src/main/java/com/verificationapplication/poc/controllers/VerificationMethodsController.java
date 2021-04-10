@@ -140,18 +140,18 @@ public class VerificationMethodsController {
 
     @PostMapping("/method5/{ageGroup}/{clubId}")
     public boolean verifyFacialRecognition(@RequestParam("playerPhoto") MultipartFile multipartFile, @PathVariable int ageGroup, @PathVariable int clubId){
-        //String url = "http://18.205.162.30:8082/faceCompare";
-        String url = "http://127.0.0.1:8080/faceCompare1";
+        log.info("Method 5: Verifying the player by Facial Recognition");
+        String url = "http://18.205.162.30:8082/faceCompare";
+        //String url = "http://127.0.0.1:8080/faceCompare1";
 
         //Get all images for Club ID for Given Year
         List<Player> playersPhotosForClub = playerRepository.findByClubIdAndAgeGroup(clubId, ageGroup);
 
-        ArrayList<PlayerMatch> playersThatMatch = new ArrayList<>();
+        ArrayList<Player> playersThatMatch = new ArrayList<>();
         int count = 0;
 
         for (Player player : playersPhotosForClub) {
             try {
-                //File file = new File("/Users/dplower/development/poc/verificationapplication/src/main/resources/TeamA/t_a_player_1.png");
                 String filename = "src/main/resources/targetFile"+count+".png";
                 File file = new File(filename);
                 FileUtils.copyInputStreamToFile(player.getImage().getBinaryStream(), file);
@@ -181,27 +181,42 @@ public class VerificationMethodsController {
                 if (faceMatches.size() != 0) {
                     LinkedHashMap values = (LinkedHashMap) faceMatches.get(0);
                     Double sim = (Double) values.get("similarity");
-
-                    System.err.println("Does match : Sim Score = " + sim);
-                    PlayerMatch playerMatch = new PlayerMatch(player.getMembershipId(), true,sim);
+                    log.info("SUCCESS: We do have a match, with Similarity Score of "+ sim);
+                    Player playerMatch = new Player();
+                    playerMatch.setMembershipId(player.getMembershipId());
+                    playerMatch.setSimScore(sim);
+                    playerMatch.setActiveMembership(player.isActiveMembership());
+                    playerMatch.setAgeGroup(player.getAgeGroup());
                     playersThatMatch.add(playerMatch);
                 } else {
-                    System.err.println("Does not match");
-                    PlayerMatch playerMatch = new PlayerMatch(player.getMembershipId(), false,0);
-                    playersThatMatch.add(playerMatch);
+                    log.info("FAILED: We do not have a match");
+                   // PlayerMatch playerMatch = new PlayerMatch(player.getMembershipId(), false,0);
+                   // playersThatMatch.add(playerMatch);
                 }
             } catch (IOException | SQLException e) {
-                System.out.println("Exception => " + e.getLocalizedMessage());
+                log.error(e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Remote Server is down");
+                log.error(e.getMessage());
+                log.error("Remote Server is down");
             }
             count++;
         }
-        
-        return false;
+
+        if(playersThatMatch.size() != 0){
+            Player thePlayer = playersThatMatch.get(0);
+            if((thePlayer.getAgeGroup() >= ageGroup) && (thePlayer.isActiveMembership())){
+                log.info("Player has successfully PASSED verification for Facial Recognition:  For given membershipId, clubId and ageGroup");
+                return true;
+            }else{
+                log.info("Player has FAILED verification for Facial Recognition:  For given photo related membershipId, clubId and ageGroup");
+                return false;
+            }
+        }else{
+            log.info("Player has FAILED verification for Facial Recognition:  For given photo related membershipId, clubId and ageGroup");
+            return false;
+        }
     }
 
 
 
-}
+}//end of program

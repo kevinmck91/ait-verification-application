@@ -20,6 +20,8 @@ public class Player {
 	private int clubId;
 	private boolean activeMembership;
 	private int trustScore;
+	@Transient
+	private double simScore;
 
 	
 	//TODO look up linter
@@ -114,6 +116,14 @@ public class Player {
 
 	public void setAgeGroup(int ageGroup) {
 		this.ageGroup = ageGroup;
+	}
+
+	public double getSimScore() {
+		return simScore;
+	}
+
+	public void setSimScore(double simScore) {
+		this.simScore = simScore;
 	}
 
 	@Override
